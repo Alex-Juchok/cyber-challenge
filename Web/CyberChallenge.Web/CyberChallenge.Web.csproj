@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <UserSecretsId>aspnet-CyberChallenge-BBB373B5-EF3F-4DBB-B8AA-7152CEC275BF</UserSecretsId>
+    <WebOptimizerEnableTagHelperBundling>true</WebOptimizerEnableTagHelperBundling>
+  </PropertyGroup>
+
+   <ItemGroup>
+     <InternalsVisibleTo Include="CyberChallenge.Web.Tests" />
+   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+    <PackageReference Include="LigerShark.WebOptimizer.Core" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CyberChallenge.Common\CyberChallenge.Common.csproj" />
+    <ProjectReference Include="..\..\Data\CyberChallenge.Data.Models\CyberChallenge.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Data\CyberChallenge.Data\CyberChallenge.Data.csproj" />
+    <ProjectReference Include="..\..\Services\CyberChallenge.Services.Data\CyberChallenge.Services.Data.csproj" />
+    <ProjectReference Include="..\..\Services\CyberChallenge.Services.Mapping\CyberChallenge.Services.Mapping.csproj" />
+    <ProjectReference Include="..\..\Services\CyberChallenge.Services.Messaging\CyberChallenge.Services.Messaging.csproj" />
+    <ProjectReference Include="..\..\Services\CyberChallenge.Services\CyberChallenge.Services.csproj" />
+    <ProjectReference Include="..\CyberChallenge.Web.Infrastructure\CyberChallenge.Web.Infrastructure.csproj" />
+    <ProjectReference Include="..\CyberChallenge.Web.ViewModels\CyberChallenge.Web.ViewModels.csproj" />
+  </ItemGroup>
+</Project>

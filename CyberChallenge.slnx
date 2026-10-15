@@ -1,0 +1,31 @@
+<Solution>
+  <Folder Name="/Data/">
+    <Project Path="Data/CyberChallenge.Data.Common/CyberChallenge.Data.Common.csproj" />
+    <Project Path="Data/CyberChallenge.Data.Models/CyberChallenge.Data.Models.csproj" />
+    <Project Path="Data/CyberChallenge.Data/CyberChallenge.Data.csproj" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="Services/CyberChallenge.Services.Data/CyberChallenge.Services.Data.csproj" />
+    <Project Path="Services/CyberChallenge.Services.Mapping/CyberChallenge.Services.Mapping.csproj" />
+    <Project Path="Services/CyberChallenge.Services.Messaging/CyberChallenge.Services.Messaging.csproj" />
+    <Project Path="Services/CyberChallenge.Services/CyberChallenge.Services.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".globalconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="stylecop.json" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/CyberChallenge.Services.Data.Tests/CyberChallenge.Services.Data.Tests.csproj" />
+    <Project Path="Tests/CyberChallenge.Web.Tests/CyberChallenge.Web.Tests.csproj" />
+    <Project Path="Tests/Sandbox/Sandbox.csproj" />
+  </Folder>
+  <Folder Name="/Web/">
+    <Project Path="Web/CyberChallenge.Web.Infrastructure/CyberChallenge.Web.Infrastructure.csproj" />
+    <Project Path="Web/CyberChallenge.Web.ViewModels/CyberChallenge.Web.ViewModels.csproj" />
+    <Project Path="Web/CyberChallenge.Web/CyberChallenge.Web.csproj" />
+  </Folder>
+  <Project Path="CyberChallenge.Common/CyberChallenge.Common.csproj" />
+</Solution>

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\CyberChallenge.Data.Common\CyberChallenge.Data.Common.csproj" />
+    <ProjectReference Include="..\..\Data\CyberChallenge.Data.Models\CyberChallenge.Data.Models.csproj" />
+    <ProjectReference Include="..\CyberChallenge.Services.Mapping\CyberChallenge.Services.Mapping.csproj" />
+    <ProjectReference Include="..\..\CyberChallenge.Common\CyberChallenge.Common.csproj" />
+  </ItemGroup>
+
+</Project>

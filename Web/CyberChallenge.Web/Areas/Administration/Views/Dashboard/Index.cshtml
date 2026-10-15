@@ -1,0 +1,112 @@
+﻿@model CyberChallenge.Web.ViewModels.Administration.Dashboard.IndexViewModel
+
+@{
+    ViewData["Title"] = "Панель администратора";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Статистика системы</h5>
+        <p class="mb-0">
+            Количество настроек: <strong>@Model.SettingsCount</strong>
+        </p>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="alert">
+        @successMessage
+    </div>
+}
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Управление пользователями</h5>
+    </div>
+
+    <div class="card-body">
+        @if (Model.Users.Count == 0)
+        {
+            <p class="text-muted mb-0">Пользователи не найдены.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Имя пользователя</th>
+                            <th>Роль</th>
+                            <th>Статус</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>@user.Email</td>
+                                <td>@user.UserName</td>
+                                <td>@user.Role</td>
+                                <td>
+                                    @if (user.IsBlocked)
+                                    {
+                                        <span class="badge bg-danger">Заблокирован</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Активен</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.Role != "Administrator")
+                                    {
+                                        @if (user.IsBlocked)
+                                        {
+                                            <form asp-area="Administration" asp-controller="Dashboard" asp-action="UnblockUser"
+                                                  method="post">
+                                                <input type="hidden" name="userId" value="@user.Id" />
+
+                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                    Разблокировать
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-area="Administration" asp-controller="Dashboard" asp-action="BlockUser"
+                                                  method="post">
+                                                <input type="hidden" name="userId" value="@user.Id" />
+
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    Заблокировать
+                                                </button>
+                                            </form>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            Действие недоступно
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
