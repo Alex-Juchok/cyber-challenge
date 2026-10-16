@@ -11,6 +11,21 @@ namespace CyberChallenge.Services.Data.Users
     {
         Task<IReadOnlyCollection<UserManagementDto>> GetAllAsync();
 
+        Task<IdentityResult> CreateAsync(
+                string email,
+                string password,
+                string role);
+
+        Task<IdentityResult> UpdateAsync(
+            string userId,
+            string email,
+            string role,
+            string currentAdminId);
+
+        Task<IdentityResult> DeleteAsync(
+            string userId,
+            string currentAdminId);
+
         Task<IdentityResult> BlockAsync(
             string userId,
             string currentAdminId);

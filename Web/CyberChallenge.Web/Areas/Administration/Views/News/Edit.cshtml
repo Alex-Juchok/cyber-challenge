@@ -1,0 +1,56 @@
+@model CyberChallenge.Web.ViewModels.News.NewsArticleInputModel
+
+@{
+    ViewData["Title"] = "Редактирование новости";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="ExistingImagePath" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Content" class="form-label"></label>
+        <textarea asp-for="Content" class="form-control" rows="12"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ExistingImagePath))
+    {
+        <div class="mb-3">
+            <p>Текущая фотография:</p>
+            <img src="@Model.ExistingImagePath" alt="Текущая фотография новости" class="img-fluid rounded"
+                 style="max-height:250px" />
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="RemoveImage" class="form-check-input" />
+            <label asp-for="RemoveImage" class="form-check-label"></label>
+        </div>
+    }
+
+    <div class="mb-3">
+        <label asp-for="Image" class="form-label">
+            Загрузить новую фотографию
+        </label>
+        <input asp-for="Image" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-control" />
+        <span asp-validation-for="Image" class="text-danger"></span>
+        <div class="form-text">JPG, PNG или WEBP, максимум 5 МБ.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

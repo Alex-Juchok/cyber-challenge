@@ -1,0 +1,29 @@
+@model CyberChallenge.Web.ViewModels.News.NewsArticleViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<article class="mx-auto" style="max-width:900px">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm mb-4">
+        ← Все новости
+    </a>
+
+    <h1 class="mb-3">@Model.Title</h1>
+
+    <div class="text-muted mb-4">
+        <span>
+            Опубликовано:
+            @Model.PublishedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+        </span>
+        <span class="ms-3">Просмотры: @Model.ViewsCount</span>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+    {
+        <img src="@Model.ImagePath" alt="@Model.Title" class="img-fluid rounded mb-4"
+             style="max-height:500px;width:100%;object-fit:contain" />
+    }
+
+    <div style="white-space:pre-wrap;overflow-wrap:anywhere">@Model.Content</div>
+</article>

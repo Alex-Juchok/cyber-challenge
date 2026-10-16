@@ -47,6 +47,140 @@
         }
 
         /// <summary>
+        /// Показывает форму создания пользователя.
+        /// </summary>
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+            return this.View(new CreateUserViewModel());
+        }
+
+        /// <summary>
+        /// Создаёт пользователя через сервис Identity.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateUser(CreateUserViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            var result = await this.userManagementService.CreateAsync(
+                model.Email,
+                model.Password,
+                model.Role);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    this.ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return this.View(model);
+            }
+
+            this.TempData["SuccessMessage"] = "Пользователь создан.";
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
+
+        /// <summary>
+        /// Показывает форму редактирования пользователя.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string userId)
+        {
+            var users = await this.userManagementService.GetAllAsync();
+            var user = users.FirstOrDefault(item => item.Id == userId);
+
+            if (user is null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(new EditUserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email ?? string.Empty,
+                Role = user.Role == "Без роли" ? "User" : user.Role,
+            });
+        }
+
+        /// <summary>
+        /// Сохраняет изменения пользователя.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            var currentAdminId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(currentAdminId))
+            {
+                return this.Forbid();
+            }
+
+            var result = await this.userManagementService.UpdateAsync(
+                model.Id,
+                model.Email,
+                model.Role,
+                currentAdminId);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    this.ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return this.View(model);
+            }
+
+            this.TempData["SuccessMessage"] = "Данные пользователя обновлены.";
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
+
+        /// <summary>
+        /// Удаляет аккаунт после отправки POST-запроса.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var currentAdminId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(currentAdminId))
+            {
+                return this.Forbid();
+            }
+
+            var result = await this.userManagementService.DeleteAsync(
+                userId,
+                currentAdminId);
+
+            if (result.Succeeded)
+            {
+                this.TempData["SuccessMessage"] = "Пользователь удалён.";
+            }
+            else
+            {
+                this.TempData["ErrorMessage"] =
+                    string.Join(" ", result.Errors.Select(error => error.Description));
+            }
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
+
+        /// <summary>
         /// Блокирует пользователя и возвращает администратора на Dashboard.
         /// </summary>
         [HttpPost]

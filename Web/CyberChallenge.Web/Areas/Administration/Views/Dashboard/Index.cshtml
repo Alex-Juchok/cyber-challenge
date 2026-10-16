@@ -30,8 +30,18 @@
 }
 
 <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h5 class="mb-0">Управление пользователями</h5>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="CreateUser" class="btn btn-primary btn-sm">
+                Создать пользователя
+            </a>
+
+            <a href="/Administration/Users/Statistics" class="btn btn-outline-secondary btn-sm">
+                Статистика пользователей
+            </a>
+        </div>
     </div>
 
     <div class="card-body">
@@ -41,24 +51,73 @@
         }
         else
         {
+                
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-5">
+                    <label for="userSearch" class="form-label">Поиск</label>
+                    <input id="userSearch" type="search" class="form-control" placeholder="Email или имя пользователя..." />
+                </div>
+
+                <div class="col-md-3">
+                    <label for="roleFilter" class="form-label">Роль</label>
+                    <select id="roleFilter" class="form-select">
+                        <option value="">Все роли</option>
+                        <option value="User">Пользователь</option>
+                        <option value="Administrator">Администратор</option>
+                        <option value="Без роли">Без роли</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="statusFilter" class="form-label">Статус</label>
+                    <select id="statusFilter" class="form-select">
+                        <option value="">Все статусы</option>
+                        <option value="active">Активен</option>
+                        <option value="blocked">Заблокирован</option>
+                    </select>
+                </div>
+            </div>
+
+            <p class="text-muted">
+                Найдено: <strong id="visibleUsersCount">@Model.Users.Count</strong>
+            </p>
+
             <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
+                <table class="table table-striped table-hover align-middle" id="usersTable">
                     <thead>
                         <tr>
                             <th>Email</th>
                             <th>Имя пользователя</th>
                             <th>Роль</th>
                             <th>Статус</th>
-                            <th>Действие</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach (var user in Model.Users)
                         {
-                            <tr>
+                            <tr data-email="@user.Email" data-username="@user.UserName" data-role="@user.Role"
+                                data-status="@(user.IsBlocked ? "blocked" : "active")">
+
                                 <td>@user.Email</td>
                                 <td>@user.UserName</td>
-                                <td>@user.Role</td>
+                                <td>
+                                    @if (user.Role == "Administrator")
+                                    {
+                                        <span class="badge bg-primary">Администратор</span>
+                                    }
+                                    else if (user.Role == "User")
+                                    {
+                                        <span class="badge bg-secondary">Пользователь</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Без роли</span>
+                                    }
+                                </td>
+
                                 <td>
                                     @if (user.IsBlocked)
                                     {
@@ -69,44 +128,118 @@
                                         <span class="badge bg-success">Активен</span>
                                     }
                                 </td>
+
                                 <td>
-                                    @if (user.Role != "Administrator")
-                                    {
-                                        @if (user.IsBlocked)
-                                        {
-                                            <form asp-area="Administration" asp-controller="Dashboard" asp-action="UnblockUser"
-                                                  method="post">
-                                                <input type="hidden" name="userId" value="@user.Id" />
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        <a asp-action="EditUser" asp-route-userId="@user.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Изменить
+                                        </a>
 
-                                                <button type="submit" class="btn btn-sm btn-outline-success">
-                                                    Разблокировать
-                                                </button>
-                                            </form>
-                                        }
-                                        else
+                                        @if (user.Role != "Administrator")
                                         {
-                                            <form asp-area="Administration" asp-controller="Dashboard" asp-action="BlockUser"
-                                                  method="post">
-                                                <input type="hidden" name="userId" value="@user.Id" />
+                                            @if (user.IsBlocked)
+                                            {
+                                                <form asp-action="UnblockUser" method="post">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
 
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    Заблокировать
-                                                </button>
-                                            </form>
+                                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                                        Разблокировать
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="BlockUser" method="post">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                        Заблокировать
+                                                    </button>
+                                                </form>
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">
-                                            Действие недоступно
-                                        </span>
-                                    }
+
+                                        <form asp-action="DeleteUser" method="post"
+                                              onsubmit="return confirm('Удалить этого пользователя?');">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Удалить
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
+
+            <p id="noUsersMessage" class="text-muted d-none">
+                По заданным условиям пользователи не найдены.
+            </p>
+
+            @section Scripts {
+                <script>
+                            // Поиск и фильтрация работают по уже загруженным строкам таблицы.
+                            // Дополнительные запросы к серверу не выполняются.
+                            document.addEventListener("DOMContentLoaded", () => {
+                                const searchInput = document.getElementById("userSearch");
+                                const roleFilter = document.getElementById("roleFilter");
+                                const statusFilter = document.getElementById("statusFilter");
+                                const rows = Array.from(
+                                    document.querySelectorAll("#usersTable tbody tr")
+                                );
+
+                                const countElement = document.getElementById("visibleUsersCount");
+                                const noUsersMessage = document.getElementById("noUsersMessage");
+
+                                function filterUsers() {
+                                    const search = searchInput.value.trim().toLocaleLowerCase();
+                                    const role = roleFilter.value;
+                                    const status = statusFilter.value;
+
+                                    let visibleCount = 0;
+
+                                    for (const row of rows) {
+                                        const email = (row.dataset.email || "").toLocaleLowerCase();
+                                        const username = (row.dataset.username || "").toLocaleLowerCase();
+
+                                        const matchesSearch =
+                                            email.includes(search) || username.includes(search);
+
+                                        const matchesRole =
+                                            !role || row.dataset.role === role;
+
+                                        const matchesStatus =
+                                            !status || row.dataset.status === status;
+
+                                        const isVisible =
+                                            matchesSearch && matchesRole && matchesStatus;
+
+                                        row.classList.toggle("d-none", !isVisible);
+
+                                        if (isVisible) {
+                                            visibleCount++;
+                                        }
+                                    }
+
+                                    countElement.textContent = visibleCount;
+                                    noUsersMessage.classList.toggle(
+                                        "d-none",
+                                        visibleCount !== 0
+                                    );
+                                }
+
+                                searchInput.addEventListener("input", filterUsers);
+                                roleFilter.addEventListener("change", filterUsers);
+                                statusFilter.addEventListener("change", filterUsers);
+
+                                filterUsers();
+                            });
+                </script>
+            }
         }
     </div>
 </div>

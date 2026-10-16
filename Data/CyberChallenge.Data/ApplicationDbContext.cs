@@ -8,7 +8,7 @@
 
     using CyberChallenge.Data.Common.Models;
     using CyberChallenge.Data.Models;
-
+    using CyberChallenge.Data.Models.News;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +25,8 @@
         }
 
         public DbSet<Setting> Settings { get; set; }
+
+        public DbSet<NewsArticle> NewsArticles { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

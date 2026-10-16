@@ -1,0 +1,59 @@
+@model System.Collections.Generic.IReadOnlyCollection<CyberChallenge.Web.ViewModels.News.NewsArticleViewModel>
+
+@{
+    ViewData["Title"] = "Новости";
+}
+
+<h1 class="mb-4">Новости CyberChallenge</h1>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-light border">
+        Пока новостей нет. Загляните сюда позже!
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var article in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card h-100 shadow-sm">
+                    @if (!string.IsNullOrWhiteSpace(article.ImagePath))
+                    {
+                        <img src="@article.ImagePath" class="card-img-top" alt="@article.Title"
+                             style="height:220px;object-fit:cover" />
+                    }
+
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="h5 card-title">@article.Title</h2>
+
+                        <p class="text-muted small">
+                            @article.PublishedOn.ToLocalTime().ToString("dd.MM.yyyy")
+                            <span class="ms-2">
+                                <svg xmlns="http://w3.org" viewBox="0 0 24 24" width="24" height="24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+
+                                <i class="bi bi-eye"></i>
+                                @article.ViewsCount
+                            </span>
+                        </p>
+
+                        <p class="card-text">
+                            @(article.Content.Length > 180
+                                ? article.Content.Substring(0, 180) + "…"
+                                : article.Content)
+                        </p>
+
+                        <a asp-action="Details" asp-route-id="@article.Id" class="btn btn-outline-primary mt-auto">
+                            Читать далее
+                        </a>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+}

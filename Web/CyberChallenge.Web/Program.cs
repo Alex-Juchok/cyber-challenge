@@ -9,6 +9,7 @@
     using CyberChallenge.Data.Repositories;
     using CyberChallenge.Data.Seeding;
     using CyberChallenge.Services.Data;
+    using CyberChallenge.Services.Data.News;
     using CyberChallenge.Services.Data.Users;
     using CyberChallenge.Services.Mapping;
     using CyberChallenge.Services.Messaging;
@@ -16,6 +17,7 @@
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -44,7 +46,7 @@
 
             services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
                 .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
             services.Configure<CookiePolicyOptions>(
                 options =>
                 {
@@ -84,6 +86,9 @@
 
             // Сервис административного управления пользователями.
             services.AddScoped<IUserManagementService, UserManagementService>();
+
+            // Сервис управления новостной лентой
+            services.AddScoped<INewsService, NewsService>();
         }
 
         private static void Configure(WebApplication app)

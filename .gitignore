@@ -1,0 +1,45 @@
+## [ Сборка и Артефакты .NET ]
+# Игнорируем папки, куда компилируется код
+bin/
+obj/
+/build/
+
+## [ Локальные настройки пользователя и кэш ]
+# Файлы настроек Visual Studio и Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## [ Специфика VS Code ]
+# Игнорируем локальные настройки редактора и кэш OmniSharp
+.vscode/
+.ionide/
+
+## [ Тестирование и отчеты ]
+# Сбои, результаты тестов и покрытие кода
+TestResults/
+*.trx
+*.coverage
+*.coverlet.core.artifacts
+
+## [ Логи и временные файлы ]
+*.log
+*.tmp
+
+## [ Безопасность и Секреты ]
+appsettings.Development.json
+appsettings.Local.json
+*.secrets.json
+.env
+
+## [ Операционная система ]
+# Системные файлы Windows и macOS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+uploads/
