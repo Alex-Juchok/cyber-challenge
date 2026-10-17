@@ -1,6 +1,6 @@
-
 namespace CyberChallenge.Web.ViewModels.News
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
     using Microsoft.AspNetCore.Http;
 
@@ -9,7 +9,7 @@ namespace CyberChallenge.Web.ViewModels.News
     /// </summary>
     public class NewsArticleInputModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required(ErrorMessage = "Введите заголовок.")]
         [StringLength(200)]

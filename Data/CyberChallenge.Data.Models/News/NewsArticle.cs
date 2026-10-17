@@ -8,8 +8,14 @@ namespace CyberChallenge.Data.Models.News
     /// <summary>
     /// Новостная публикация.
     /// </summary>
-    public class NewsArticle : BaseDeletableModel<int>
+    public class NewsArticle : BaseDeletableModel<string>
     {
+        public NewsArticle()
+        {
+            // Генерируем UUID в виде строки при создании нового объекта.
+            this.Id = Guid.NewGuid().ToString();
+        }
+
         [Required]
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;

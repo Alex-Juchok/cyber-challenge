@@ -8,6 +8,7 @@
 
     using CyberChallenge.Data.Common.Models;
     using CyberChallenge.Data.Models;
+    using CyberChallenge.Data.Models.Game;
     using CyberChallenge.Data.Models.News;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,16 @@
 
         public DbSet<Setting> Settings { get; set; }
 
+        /// <summary>
+        /// Новости и статьи, публикуемые в приложении.
+        /// </summary>
         public DbSet<NewsArticle> NewsArticles { get; set; }
+
+        /// <summary>
+        /// Результаты попыток прохождения игровых уровней.
+        /// </summary>
+        public DbSet<GameAttempt> GameAttempts { get; set; }
+            = null!;
 
         public override int SaveChanges() => this.SaveChanges(true);
 

@@ -1,0 +1,112 @@
+@model CyberChallenge.Web.ViewModels.Game.GameViewModel
+
+@{
+    ViewData["Title"] = "Числовой контейнер";
+}
+
+<div class="number-game">
+    <header class="game-header">
+        <div>
+            <p class="game-eyebrow">ЧИСЛОВОЙ КОНТЕЙНЕР</p>
+            <h1>@Model.Title</h1>
+            <p class="game-rules">@Model.Rules</p>
+        </div>
+
+        <div class="level-badge">
+            Уровень <strong>@Model.LevelNumber</strong>
+        </div>
+    </header>
+
+    <div class="game-board">
+        <section class="number-bank" aria-label="Доступные числа">
+            <h2>Выберите числа</h2>
+            <p>Перетащите фишки в контейнер или нажмите на них.</p>
+
+            <div id="number-bank" class="number-bank-items">
+                @foreach (var number in Model.Numbers)
+                {
+                    <button type="button" class="number-chip" draggable="true" data-number-id="@number.Id"
+                            data-value="@number.Value" aria-label="Число @number.Value">
+                        @number.Value
+                    </button>
+                }
+            </div>
+        </section>
+
+        <form asp-controller="Game" asp-action="Submit" method="post" id="game-form">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="LevelNumber" value="@Model.LevelNumber" />
+
+            <div id="selected-number-inputs">
+                @foreach (var selectedId in Model.SelectedNumberIds)
+                {
+                    <input type="hidden" name="SelectedNumberIds" value="@selectedId" />
+                }
+            </div>
+
+            <div class="game-workspace">
+                <aside class="target-box" aria-label="Загаданное число">
+                    <span class="target-label">ЦЕЛЬ</span>
+                    <div class="target-number">@Model.TargetNumber</div>
+                    <span class="target-caption">Нужно получить</span>
+                </aside>
+
+                <section class="container-area">
+                    <div class="container-heading">
+                        <h2>Контейнер</h2>
+                        <button type="button" id="clear-selection" class="clear-button">
+                            Очистить
+                        </button>
+                    </div>
+
+                    <div id="number-container" class="number-container" aria-label="Перетащите сюда числа">
+                        <p id="container-placeholder" class="container-placeholder">
+                            Перетащите числа сюда
+                        </p>
+                    </div>
+
+                    <div class="container-summary">
+                        <span>Текущая сумма</span>
+                        <strong id="current-sum">0</strong>
+                    </div>
+
+                    <button type="submit" class="check-button">
+                        Проверить ответ
+                    </button>
+                </section>
+            </div>
+        </form>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.FeedbackMessage))
+    {
+        <div class="game-feedback @(Model.IsLevelCompleted ? "success" : "failure")" role="status">
+            <strong>@Model.FeedbackMessage</strong>
+
+            @if (Model.CalculatedResult.HasValue)
+            {
+                <span>Ваш результат: @Model.CalculatedResult.Value</span>
+            }
+
+            @if (Model.IsLevelCompleted)
+            {
+                @if (Model.LevelNumber < 8)
+                {
+                    <a asp-controller="Game" asp-action="Index" asp-route-level="@(Model.LevelNumber + 1)"
+                       class="next-level-button">
+                        Следующий уровень
+                    </a>
+                }
+                else
+                {
+                    <strong>Поздравляем! Вы прошли все доступные уровни.</strong>
+                }
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/site.js" asp-append-version="true"></script>
+}

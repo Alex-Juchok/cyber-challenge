@@ -2,73 +2,335 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
-    white-space: normal;
-    text-align: center;
-    word-break: break-all;
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
 a {
-    color: #0366d6;
+  color: #0366d6;
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 @media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+  html {
+    font-size: 16px;
+  }
 }
 
 .border-top {
-    border-top: 1px solid #e5e5e5;
+  border-top: 1px solid #e5e5e5;
 }
 
 .border-bottom {
-    border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
 
 button.accept-policy {
-    font-size: 1rem;
-    line-height: inherit;
+  font-size: 1rem;
+  line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 
 body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
 }
 
 .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    white-space: nowrap;
-    line-height: 60px; /* Vertically center the text there */
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+.number-game {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 24px;
+  color: #e8edf7;
+  background: #111827;
+  border: 1px solid #263348;
+  border-radius: 24px;
+}
+
+.game-header,
+.container-heading,
+.container-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.game-eyebrow,
+.target-label {
+  color: #8da7ff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.game-header h1 {
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+.game-rules,
+.number-bank > p {
+  color: #a9b6ca;
+}
+
+.level-badge {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  background: #202d42;
+  border-radius: 14px;
+}
+
+.number-bank {
+  margin: 28px 0;
+  padding: 20px;
+  background: #182235;
+  border: 1px solid #293750;
+  border-radius: 18px;
+}
+
+.number-bank-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  min-height: 70px;
+  padding-top: 12px;
+}
+
+.number-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  padding: 0;
+  color: #fff;
+  background: #405ed0;
+  border: 3px solid #7890ff;
+  border-radius: 50%;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: grab;
+  touch-action: manipulation;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.number-chip:hover {
+  transform: translateY(-3px);
+  background: #536fe0;
+}
+
+.number-chip:focus-visible,
+.check-button:focus-visible,
+.clear-button:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
+}
+
+.number-chip.is-selected {
+  background: #087f8c;
+  border-color: #55d6dc;
+}
+
+.game-workspace {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 18px;
+}
+
+.target-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: 20px 12px;
+  background: linear-gradient(160deg, #3b2b68, #241e42);
+  border: 1px solid #7460b4;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.target-number {
+  margin: 12px 0;
+  color: #f4d77a;
+  font-size: 3.5rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.target-caption {
+  color: #c6bddf;
+  font-size: 0.85rem;
+}
+
+.container-area {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 14px;
+}
+
+.container-heading h2,
+.number-bank h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.clear-button {
+  padding: 8px 12px;
+  color: #d9e3f4;
+  background: #263348;
+  border: 1px solid #40516b;
+  border-radius: 10px;
+}
+
+.number-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 280px;
+  padding: 18px;
+  background: #0b1220;
+  border: 2px dashed #53647e;
+  border-radius: 18px;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.number-container.is-drop-target {
+  background: #15263a;
+  border-color: #55d6dc;
+}
+
+.container-placeholder {
+  width: 100%;
+  margin: auto;
+  color: #73839b;
+  text-align: center;
+  pointer-events: none;
+}
+
+.container-summary {
+  padding: 12px 16px;
+  background: #1b293d;
+  border-radius: 12px;
+}
+
+#current-sum {
+  color: #f4d77a;
+  font-size: 1.5rem;
+}
+
+.check-button,
+.next-level-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  color: #fff;
+  background: #2563eb;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.check-button:hover,
+.next-level-button:hover {
+  color: #fff;
+  background: #1d4ed8;
+}
+
+.game-feedback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid;
+  border-radius: 14px;
+}
+
+.game-feedback.success {
+  background: #12352e;
+  border-color: #277d67;
+}
+
+.game-feedback.failure {
+  background: #3b2028;
+  border-color: #8c3e50;
+}
+
+@media (max-width: 650px) {
+  .number-game {
+    margin: 12px auto;
+    padding: 16px;
+  }
+
+  .game-header {
+    align-items: flex-start;
+  }
+
+  .game-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .target-box {
+    min-height: 130px;
+  }
+
+  .target-number {
+    margin: 4px 0;
+    font-size: 2.5rem;
+  }
+
+  .number-container {
+    min-height: 220px;
+  }
 }

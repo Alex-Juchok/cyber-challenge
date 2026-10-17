@@ -1,4 +1,3 @@
-
 namespace CyberChallenge.Web.Areas.Administration.Controllers
 {
     using System;
@@ -29,20 +28,27 @@ namespace CyberChallenge.Web.Areas.Administration.Controllers
             this.environment = environment;
         }
 
-        // GET: /Administration/News
+        /// <summary>
+        /// Отображает панель с новостями.
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var articles = await this.newsService.GetAllAsync();
             return this.View(articles);
         }
 
-        // GET: /Administration/News/Create
+        /// <summary>
+        /// Показывает форму создания новости.
+        /// </summary>
+        [HttpGet]
         public IActionResult Create()
         {
             return this.View(new NewsArticleInputModel());
         }
 
-        // POST: /Administration/News/Create
+        /// <summary>
+        /// Создаёт новость.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NewsArticleInputModel model)
@@ -78,8 +84,11 @@ namespace CyberChallenge.Web.Areas.Administration.Controllers
             return this.RedirectToAction(nameof(this.Index));
         }
 
-        // GET: /Administration/News/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        /// <summary>
+        /// Показывает форму редактирования новости.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
         {
             var article = await this.newsService.GetByIdAsync(id);
 
@@ -97,7 +106,9 @@ namespace CyberChallenge.Web.Areas.Administration.Controllers
             });
         }
 
-        // POST: /Administration/News/Edit
+        /// <summary>
+        /// Сохраняет изменения новости.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(NewsArticleInputModel model)
@@ -159,10 +170,12 @@ namespace CyberChallenge.Web.Areas.Administration.Controllers
             return this.RedirectToAction(nameof(this.Index));
         }
 
-        // POST: /Administration/News/Delete
+        /// <summary>
+        /// Удаляет новость.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var article = await this.newsService.GetByIdAsync(id);
 

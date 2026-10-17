@@ -21,6 +21,9 @@ namespace CyberChallenge.Services.Data.News
             this.repository = repository;
         }
 
+        /// <summary>
+        /// Возвращает все новости, отсортированные по дате публикации в порядке убывания.
+        /// </summary>
         public async Task<IReadOnlyCollection<NewsArticle>> GetAllAsync()
         {
             return await this.repository
@@ -29,19 +32,28 @@ namespace CyberChallenge.Services.Data.News
                 .ToListAsync();
         }
 
-        public async Task<NewsArticle?> GetByIdAsync(int id)
+        /// <summary>
+        /// Возвращает новость по её идентификатору.
+        /// </summary>
+        public async Task<NewsArticle?> GetByIdAsync(string id)
         {
             return await this.repository
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(article => article.Id == id);
         }
 
+        /// <summary>
+        /// Создаёт новую новость.
+        /// </summary>
         public async Task CreateAsync(NewsArticle article)
         {
             await this.repository.AddAsync(article);
             await this.repository.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Обновляет существующую новость.
+        /// </summary>
         public async Task<bool> UpdateAsync(NewsArticle article)
         {
             var existing = await this.repository
@@ -62,7 +74,10 @@ namespace CyberChallenge.Services.Data.News
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        /// <summary>
+        /// Удаляет новость по её идентификатору.
+        /// </summary>
+        public async Task<bool> DeleteAsync(string id)
         {
             var article = await this.repository
                 .All()
@@ -81,7 +96,10 @@ namespace CyberChallenge.Services.Data.News
             return true;
         }
 
-        public async Task<bool> IncrementViewsAsync(int id)
+        /// <summary>
+        /// Увеличмвает количество просмотров новости по ее идентификатору.
+        /// <summary>
+        public async Task<bool> IncrementViewsAsync(string id)
         {
             // Нужна отслеживаемая сущность, так как изменяется счётчик.
             var article = await this.repository

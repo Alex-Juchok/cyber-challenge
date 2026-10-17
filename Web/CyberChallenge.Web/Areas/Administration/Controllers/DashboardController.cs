@@ -150,7 +150,7 @@
         }
 
         /// <summary>
-        /// Удаляет аккаунт после отправки POST-запроса.
+        /// Удаляет аккаунт.
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]

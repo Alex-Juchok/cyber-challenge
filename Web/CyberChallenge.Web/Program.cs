@@ -9,6 +9,7 @@
     using CyberChallenge.Data.Repositories;
     using CyberChallenge.Data.Seeding;
     using CyberChallenge.Services.Data;
+    using CyberChallenge.Services.Data.Game;
     using CyberChallenge.Services.Data.News;
     using CyberChallenge.Services.Data.Users;
     using CyberChallenge.Services.Mapping;
@@ -89,6 +90,9 @@
 
             // Сервис управления новостной лентой
             services.AddScoped<INewsService, NewsService>();
+
+            // Сервис игровой логики: уровни и проверка решений.
+            services.AddScoped<IGameService, GameService>();
         }
 
         private static void Configure(WebApplication app)

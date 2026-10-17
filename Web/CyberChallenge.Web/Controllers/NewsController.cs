@@ -16,7 +16,10 @@ namespace CyberChallenge.Web.Controllers
             this.newsService = newsService;
         }
 
-        // GET: /News
+        /// <summary>
+        /// Отображает панель с новостями.
+        /// </summary>
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var articles = await this.newsService.GetAllAsync();
@@ -34,8 +37,13 @@ namespace CyberChallenge.Web.Controllers
             return this.View(model);
         }
 
-        // GET: /News/Details/5
-        public async Task<IActionResult> Details(int id)
+        /// <summary>
+        /// Отображает детали новости.
+        /// </summary>
+        /// <param name="id">Идентификатор новости.</param>
+        /// <returns>Страница с деталями новости.</returns>
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
         {
             // Не показываем несуществующие или удалённые новости.
             var article = await this.newsService.GetByIdAsync(id);
