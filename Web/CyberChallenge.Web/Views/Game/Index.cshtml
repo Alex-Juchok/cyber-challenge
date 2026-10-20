@@ -3,110 +3,209 @@
 @{
     ViewData["Title"] = "Числовой контейнер";
 }
-
-<div class="number-game">
-    <header class="game-header">
-        <div>
-            <p class="game-eyebrow">ЧИСЛОВОЙ КОНТЕЙНЕР</p>
-            <h1>@Model.Title</h1>
-            <p class="game-rules">@Model.Rules</p>
-        </div>
-
-        <div class="level-badge">
-            Уровень <strong>@Model.LevelNumber</strong>
-        </div>
-    </header>
-
-    <div class="game-board">
-        <section class="number-bank" aria-label="Доступные числа">
-            <h2>Выберите числа</h2>
-            <p>Перетащите фишки в контейнер или нажмите на них.</p>
-
-            <div id="number-bank" class="number-bank-items">
-                @foreach (var number in Model.Numbers)
-                {
-                    <button type="button" class="number-chip" draggable="true" data-number-id="@number.Id"
-                            data-value="@number.Value" aria-label="Число @number.Value">
-                        @number.Value
-                    </button>
-                }
-            </div>
-        </section>
-
-        <form asp-controller="Game" asp-action="Submit" method="post" id="game-form">
-            @Html.AntiForgeryToken()
-
-            <input type="hidden" name="LevelNumber" value="@Model.LevelNumber" />
-
-            <div id="selected-number-inputs">
-                @foreach (var selectedId in Model.SelectedNumberIds)
-                {
-                    <input type="hidden" name="SelectedNumberIds" value="@selectedId" />
-                }
-            </div>
-
-            <div class="game-workspace">
-                <aside class="target-box" aria-label="Загаданное число">
-                    <span class="target-label">ЦЕЛЬ</span>
-                    <div class="target-number">@Model.TargetNumber</div>
-                    <span class="target-caption">Нужно получить</span>
-                </aside>
-
-                <section class="container-area">
-                    <div class="container-heading">
-                        <h2>Контейнер</h2>
-                        <button type="button" id="clear-selection" class="clear-button">
-                            Очистить
-                        </button>
-                    </div>
-
-                    <div id="number-container" class="number-container" aria-label="Перетащите сюда числа">
-                        <p id="container-placeholder" class="container-placeholder">
-                            Перетащите числа сюда
-                        </p>
-                    </div>
-
-                    <div class="container-summary">
-                        <span>Текущая сумма</span>
-                        <strong id="current-sum">0</strong>
-                    </div>
-
-                    <button type="submit" class="check-button">
-                        Проверить ответ
-                    </button>
-                </section>
-            </div>
-        </form>
-    </div>
-
-    @if (!string.IsNullOrWhiteSpace(Model.FeedbackMessage))
-    {
-        <div class="game-feedback @(Model.IsLevelCompleted ? "success" : "failure")" role="status">
-            <strong>@Model.FeedbackMessage</strong>
-
-            @if (Model.CalculatedResult.HasValue)
-            {
-                <span>Ваш результат: @Model.CalculatedResult.Value</span>
-            }
-
-            @if (Model.IsLevelCompleted)
-            {
-                @if (Model.LevelNumber < 8)
-                {
-                    <a asp-controller="Game" asp-action="Index" asp-route-level="@(Model.LevelNumber + 1)"
-                       class="next-level-button">
-                        Следующий уровень
-                    </a>
-                }
-                else
-                {
-                    <strong>Поздравляем! Вы прошли все доступные уровни.</strong>
-                }
-            }
-        </div>
-    }
+<div id="game-config" hidden data-operation="@Model.Operation" data-time-limit="@(Model.TimeLimitSeconds ?? -1)"
+     data-elapsed-seconds="@Model.ElapsedSeconds" data-finished="@Model.IsAttemptFinished.ToString().ToLowerInvariant()"
+     data-level="@Model.LevelNumber">
 </div>
+@if (Model.IsAttemptFinished)
+{
+    <div class="game-over-screen" role="alert">
+        <div class="game-over-card">
+            <div class="game-over-icon">!</div>
+            <h1>Попытка завершена</h1>
+            <p>Время истекло или эта попытка уже была завершена.</p>
+
+            <a asp-controller="Game" asp-action="Index" asp-route-level="@Model.LevelNumber" class="next-level-button">
+                Начать заново
+            </a>
+        </div>
+    </div>
+}
+else if (Model.IsLevelCompleted)
+{
+    <div class="level-completed">
+        <h2>Уровень пройден!</h2>
+        <p>Поздравляем! Вы правильно решили задачу.</p>
+
+        @if (Model.LevelNumber < 16)
+        {
+            <a asp-controller="Game" asp-action="Index" asp-route-level="@(Model.LevelNumber + 1)" class="next-level-button">
+                Следующий уровень
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="number-game">
+        <header class="game-header">
+            <div>
+                <p class="game-eyebrow">ЧИСЛОВОЙ КОНТЕЙНЕР</p>
+                <h1>@Model.Title</h1>
+                <p class="game-rules">@Model.Rules</p>
+            </div>
+
+            <div class="level-badge">
+                Уровень <strong>@Model.LevelNumber</strong>
+            </div>
+            <div class="game-timer-panel">
+                <span>Время</span>
+                <strong id="game-timer">00:00</strong>
+                <span>Ошибок: @Model.FailedAttempts</span>
+            </div>
+        </header>
+
+        <div class="game-board">
+            <section class="number-bank" aria-label="Доступные числа">
+                <h2>Выберите числа</h2>
+                <p>Перетащите фишки в контейнер или нажмите на них.</p>
+
+                <div id="number-bank" class="number-bank-items">
+                    @foreach (var number in Model.Numbers)
+                    {
+                        <button type="button" class="number-chip @(number.Id == Model.RequiredNumberId ? "is-required" : "")"
+                                draggable="true" data-number-id="@number.Id" data-value="@number.Value"
+                                data-required="@(number.Id == Model.RequiredNumberId ? "true" : "false")"
+                                aria-label="Число @number.Value@(number.Id == Model.RequiredNumberId ? ", обязательная фишка" : "")">
+                            @number.Value
+                        </button>
+                    }
+                </div>
+            </section>
+
+            <form asp-controller="Game" asp-action="Submit" method="post" id="game-form">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="LevelNumber" value="@Model.LevelNumber" />
+                @* Идентификатор сессии, по которой сервер восстановит раскладку. *@
+                <input type="hidden" name="SessionId" value="@Model.SessionId" />
+
+                <div id="selected-number-inputs">
+                    @foreach (var selectedId in Model.SelectedNumberIds)
+                    {
+                        <input type="hidden" name="SelectedNumberIds" value="@selectedId" />
+                    }
+                </div>
+
+                <div class="game-workspace">
+                    <aside class="target-box" aria-label="Загаданное число">
+                        <span class="target-label">ЦЕЛЬ</span>
+                        <div class="target-number">@Model.TargetNumber</div>
+                        <span class="target-caption">Нужно получить</span>
+                    </aside>
+
+                    <section class="container-area">
+                        <div class="container-heading">
+                            <h2>Контейнер</h2>
+                            <button type="button" id="clear-selection" class="clear-button">
+                                Очистить
+                            </button>
+                        </div>
+
+                        <div id="number-container" class="number-container" aria-label="Перетащите сюда числа">
+                            <p id="container-placeholder" class="container-placeholder">
+                                Перетащите числа сюда
+                            </p>
+                        </div>
+                        <div class="operation-indicator">
+                            <span>Операция</span>
+                            <strong id="operation-symbol">
+                                @switch (Model.Operation)
+                                {
+                                    case CyberChallenge.Services.Data.Game.Models.GameOperation.Addition:
+                                        @:+
+                                        break;
+                                    case CyberChallenge.Services.Data.Game.Models.GameOperation.Subtraction:
+                                        @:−
+                                        break;
+                                    case CyberChallenge.Services.Data.Game.Models.GameOperation.Multiplication:
+                                        @:×
+                                        break;
+                                    case CyberChallenge.Services.Data.Game.Models.GameOperation.Combined:
+                                        @:Комбинированная
+                                        break;
+                                }
+                            </strong>
+                        </div>
+                        <div class="container-summary">
+                            <span>Текущий результат</span>
+                            <strong id="current-sum">0</strong>
+                        </div>
+
+                        <button type="submit" class="check-button">
+                            Проверить ответ
+                        </button>
+                    </section>
+                </div>
+            </form>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.FeedbackMessage))
+        {
+            <div class="game-feedback @(Model.IsLevelCompleted ? "success" : "failure")" role="status">
+                <strong>@Model.FeedbackMessage</strong>
+
+                @if (Model.CalculatedResult.HasValue)
+                {
+                    <span>Ваш результат: @Model.CalculatedResult.Value</span>
+                }
+
+                @if (Model.IsLevelCompleted)
+                {
+                    @if (Model.LevelNumber < 16)
+                    {
+                        <a asp-controller="Game" asp-action="Index" asp-route-level="@(Model.LevelNumber + 1)"
+                           class="next-level-button">
+                            Следующий уровень
+                        </a>
+                    }
+                    else
+                    {
+                        <strong>Поздравляем! Вы прошли все доступные уровни.</strong>
+                    }
+                }
+            </div>
+        }
+    </div>
+}
 
 @section Scripts {
     <script src="~/js/site.js" asp-append-version="true"></script>
 }
+
+<script>
+    (() => {
+        const timerElement = document.getElementById('game-timer');
+
+        if (!timerElement) {
+            return;
+        }
+
+        // Начальные значения получены с сервера.
+        let elapsedSeconds = @Model.ElapsedSeconds;
+        const timeLimit = @(Model.TimeLimitSeconds ?? -1);
+
+        function renderTimer() {
+            const displayedSeconds = timeLimit >= 0
+                ? Math.max(0, timeLimit - elapsedSeconds)
+                : elapsedSeconds;
+
+            const minutes = Math.floor(displayedSeconds / 60);
+            const seconds = displayedSeconds % 60;
+
+            timerElement.textContent =
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0');
+
+            // Предупреждаем игрока, когда время заканчивается.
+            if (timeLimit >= 0 && displayedSeconds <= 10) {
+                timerElement.classList.add('timer-warning');
+            }
+
+            elapsedSeconds++;
+        }
+
+        renderTimer();
+        window.setInterval(renderTimer, 1000);
+    })();
+</script>

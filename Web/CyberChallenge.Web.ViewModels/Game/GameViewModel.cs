@@ -1,8 +1,10 @@
 namespace CyberChallenge.Web.ViewModels.Game
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using CyberChallenge.Services.Data.Game.Models;
 
     /// <summary>
     /// Содержит данные игрового экрана и результат проверки решения.
@@ -57,5 +59,50 @@ namespace CyberChallenge.Web.ViewModels.Game
         /// </summary>
         [BindNever]
         public bool IsLevelCompleted { get; set; }
+
+
+        /// <summary>
+        /// Идентификатор серверной игровой сессии.
+        /// </summary>
+        public Guid SessionId { get; set; }
+
+        /// <summary>
+        /// Ограничение времени уровня в секундах.
+        /// Null означает, что ограничение не задано.
+        /// </summary>
+        [BindNever]
+        public int? TimeLimitSeconds { get; set; }
+
+        /// <summary>
+        /// Количество секунд, прошедших с начала попытки.
+        /// Используется для отображения таймера.
+        /// </summary>
+        [BindNever]
+        public int ElapsedSeconds { get; set; }
+
+        /// <summary>
+        /// Количество неудачных попыток в текущей сессии.
+        /// </summary>
+        [BindNever]
+        public int FailedAttempts { get; set; }
+
+        /// <summary>
+        /// Операция, которую нужно использовать для получения целевого числа.
+        /// </summary>
+        [BindNever]
+        public GameOperation Operation { get; set; }
+
+        /// <summary>
+        /// Идентификатор обязательной фишки, если она задана для уровня.
+        /// </summary>
+        [BindNever]
+        public string? RequiredNumberId { get; set; }
+
+        /// <summary>
+        /// Признак того, что попытка завершена и продолжать её нельзя.
+        /// </summary>
+        [BindNever]
+        public bool IsAttemptFinished { get; set; }
+
     }
 }

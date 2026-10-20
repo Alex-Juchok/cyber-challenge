@@ -88,11 +88,14 @@
             // Сервис административного управления пользователями.
             services.AddScoped<IUserManagementService, UserManagementService>();
 
-            // Сервис управления новостной лентой
+            // Сервис управления новостной лентой.
             services.AddScoped<INewsService, NewsService>();
 
             // Сервис игровой логики: уровни и проверка решений.
             services.AddScoped<IGameService, GameService>();
+
+            // Сервис расчета очков уровня.
+            services.AddScoped<GameScoreCalculator>();
         }
 
         private static void Configure(WebApplication app)

@@ -15,10 +15,10 @@ namespace CyberChallenge.Services.Data.Game
         GameLevelDefinition? GetLevel(int levelNumber);
 
         /// <summary>
-        /// Проверяет выбранные фишки по серверным правилам уровня.
+        /// Проверяет выбранные фишки по переданному описанию уровня.
         /// </summary>
         GameSolutionResult CheckSolution(
-            int levelNumber,
+            GameLevelDefinition level,
             IReadOnlyCollection<string> selectedNumberIds);
     }
 }

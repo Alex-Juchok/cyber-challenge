@@ -15,13 +15,19 @@ namespace CyberChallenge.Services.Data.Game.Models
             int targetNumber,
             IReadOnlyCollection<GameNumberDefinition> numbers,
             string title,
-            string rules)
+            string rules,
+            GameOperation operation,
+            int? timeLimitSeconds,
+            string? requiredNumberId)
         {
             this.LevelNumber = levelNumber;
             this.TargetNumber = targetNumber;
             this.Numbers = numbers;
             this.Title = title;
             this.Rules = rules;
+            this.Operation = operation;
+            this.TimeLimitSeconds = timeLimitSeconds;
+            this.RequiredNumberId = requiredNumberId;
         }
 
         /// <summary>
@@ -48,5 +54,21 @@ namespace CyberChallenge.Services.Data.Game.Models
         /// Правила, отображаемые в интерфейсе.
         /// </summary>
         public string Rules { get; }
+
+        /// <summary>
+        /// Арифметическая операция текущего уровня.
+        /// </summary>
+        public GameOperation Operation { get; }
+
+        /// <summary>
+        /// Ограничение времени в секундах. Null означает отсутствие ограничения.
+        /// </summary>
+        public int? TimeLimitSeconds { get; }
+
+        /// <summary>
+        /// Идентификатор фишки, обязательной для использования.
+        /// Null означает, что обязательной фишки нет.
+        /// </summary>
+        public string? RequiredNumberId { get; }
     }
 }

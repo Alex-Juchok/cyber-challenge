@@ -334,3 +334,102 @@ body {
     min-height: 220px;
   }
 }
+
+.game-timer-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+#game-timer {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#game-timer.timer-warning {
+  color: #ef4444;
+}
+
+.operation-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+#operation-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: #263449;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.number-chip.is-required {
+  border: 3px solid #f59e0b;
+  box-shadow: 0 0 0 3px rgb(245 158 11 / 18%);
+}
+
+.number-chip.is-required::after {
+  content: "★";
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  color: #f59e0b;
+  font-size: 14px;
+}
+
+.number-chip {
+  position: relative;
+}
+
+.game-over-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgb(10 15 25 / 94%);
+  color: #fff;
+}
+
+.game-over-card {
+  width: min(100%, 480px);
+  padding: 36px;
+  border: 1px solid #374151;
+  border-radius: 24px;
+  background: #182234;
+  text-align: center;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 40%);
+}
+
+.game-over-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #7f1d1d;
+  color: #fecaca;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.game-over-card h1 {
+  margin-bottom: 12px;
+}
+
+.game-over-card p {
+  margin-bottom: 24px;
+  color: #cbd5e1;
+}

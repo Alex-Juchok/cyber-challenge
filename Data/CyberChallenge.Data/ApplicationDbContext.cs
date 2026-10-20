@@ -38,6 +38,11 @@
         public DbSet<GameAttempt> GameAttempts { get; set; }
             = null!;
 
+        /// <summary>
+        /// Активные и завершённые игровые сессии.
+        /// </summary>
+        public DbSet<GameSession> GameSessions { get; set; } = null!;
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

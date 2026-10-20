@@ -65,5 +65,11 @@ namespace CyberChallenge.Data.Models.Game
         /// Дата и время завершения попытки в UTC.
         /// </summary>
         public DateTime PlayedOn { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Количество неудачных отправок решения до прохождения уровня.
+        /// </summary>
+        [Range(0, int.MaxValue)]
+        public int FailedAttempts { get; set; }
     }
 }
