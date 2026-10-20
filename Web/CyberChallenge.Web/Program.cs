@@ -11,6 +11,7 @@
     using CyberChallenge.Services.Data;
     using CyberChallenge.Services.Data.Game;
     using CyberChallenge.Services.Data.News;
+    using CyberChallenge.Services.Data.Statistics;
     using CyberChallenge.Services.Data.Users;
     using CyberChallenge.Services.Mapping;
     using CyberChallenge.Services.Messaging;
@@ -96,6 +97,9 @@
 
             // Сервис расчета очков уровня.
             services.AddScoped<GameScoreCalculator>();
+
+            // Сервис агрегированной статистики и таблицы лидеров.
+            services.AddScoped<IStatisticsService, StatisticsService>();
         }
 
         private static void Configure(WebApplication app)

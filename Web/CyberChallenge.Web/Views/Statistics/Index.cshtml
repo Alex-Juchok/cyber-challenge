@@ -1,0 +1,171 @@
+@model CyberChallenge.Web.ViewModels.Statistics.StatisticsIndexViewModel
+
+@{
+    ViewData["Title"] = "Статистика";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">Статистика игроков</h1>
+
+    @* Личная статистика авторизованного игрока *@
+    @if (Model.IsAuthenticated)
+    {
+        <h2 class="h4 mb-3">Моя статистика</h2>
+
+        @if (Model.MyStatistics != null)
+        {
+            var stats = Model.MyStatistics;
+
+            <div class="row g-3 mb-5">
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Всего очков</div>
+                            <div class="fs-3 fw-bold">@stats.TotalScore</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Пройдено уровней</div>
+                            <div class="fs-3 fw-bold">@stats.CompletedLevels</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Место в рейтинге</div>
+                            <div class="fs-3 fw-bold">
+                                @(stats.Rank.HasValue ? $"#{stats.Rank}" : "—")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Всего ответов</div>
+                            <div class="fs-3 fw-bold">@stats.TotalAnswers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Ошибочных ответов</div>
+                            <div class="fs-3 fw-bold">@stats.FailedAnswers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Лучший результат за уровень</div>
+                            <div class="fs-3 fw-bold">@stats.BestScore</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Среднее время успешного прохождения</div>
+                            <div class="fs-4 fw-bold">
+                                @(stats.AverageSuccessfulTimeSeconds.HasValue
+                                    ? $"{stats.AverageSuccessfulTimeSeconds.Value:F1} с"
+                                    : "—")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="text-muted">Последняя игра</div>
+                            <div class="fs-5 fw-bold">
+                                @(stats.LastPlayedOn.HasValue
+                                    ? stats.LastPlayedOn.Value.ToString("dd.MM.yyyy HH:mm")
+                                    : "—")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mb-5">
+                Вы ещё не играли. Пройдите уровень, чтобы здесь появилась ваша статистика.
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info mb-5">
+            Войдите в аккаунт, чтобы просматривать личную статистику.
+        </div>
+    }
+
+    @* Общая таблица лидеров *@
+    <h2 class="h4 mb-3">Таблица лидеров</h2>
+
+    @if (Model.Leaderboard.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Место</th>
+                        <th scope="col">Игрок</th>
+                        <th scope="col">Очки</th>
+                        <th scope="col">Пройдено уровней</th>
+                        <th scope="col">Ошибки</th>
+                        <th scope="col">Лучший результат</th>
+                        <th scope="col">Среднее время</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var player in Model.Leaderboard)
+                    {
+                        var isCurrentPlayer =
+                            Model.MyStatistics?.Rank == player.Rank;
+
+                        <tr class="@(isCurrentPlayer ? "table-primary" : "")">
+                            <td>@player.Rank</td>
+                            <td>
+                                @player.UserName
+                                @if (isCurrentPlayer)
+                                {
+                                    <span class="badge bg-primary ms-1">Вы</span>
+                                }
+                            </td>
+                            <td class="fw-bold">@player.TotalScore</td>
+                            <td>@player.CompletedLevels</td>
+                            <td>@player.FailedAnswers</td>
+                            <td>@player.BestScore</td>
+                            <td>
+                                @(player.AverageSuccessfulTimeSeconds.HasValue
+                                    ? $"{player.AverageSuccessfulTimeSeconds.Value:F1} с"
+                                    : "—")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">
+            Пока нет данных для формирования рейтинга.
+        </p>
+    }
+</div>

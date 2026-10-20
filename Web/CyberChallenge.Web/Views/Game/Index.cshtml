@@ -3,12 +3,15 @@
 @{
     ViewData["Title"] = "Числовой контейнер";
 }
+@* Скрытый элемент со статистикой *@
 <div id="game-config" hidden data-operation="@Model.Operation" data-time-limit="@(Model.TimeLimitSeconds ?? -1)"
      data-elapsed-seconds="@Model.ElapsedSeconds" data-finished="@Model.IsAttemptFinished.ToString().ToLowerInvariant()"
      data-level="@Model.LevelNumber">
 </div>
+
 @if (Model.IsAttemptFinished)
 {
+    @* Экран проигрыша *@
     <div class="game-over-screen" role="alert">
         <div class="game-over-card">
             <div class="game-over-icon">!</div>
@@ -23,6 +26,7 @@
 }
 else if (Model.IsLevelCompleted)
 {
+    @* Экран пройденого уровня *@
     <div class="level-completed">
         <h2>Уровень пройден!</h2>
         <p>Поздравляем! Вы правильно решили задачу.</p>
@@ -37,6 +41,7 @@ else if (Model.IsLevelCompleted)
 }
 else
 {
+    @* Основная игра *@
     <div class="number-game">
         <header class="game-header">
             <div>
@@ -171,41 +176,5 @@ else
 
 @section Scripts {
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/gameTimer.js" asp-append-version="true"></script>
 }
-
-<script>
-    (() => {
-        const timerElement = document.getElementById('game-timer');
-
-        if (!timerElement) {
-            return;
-        }
-
-        // Начальные значения получены с сервера.
-        let elapsedSeconds = @Model.ElapsedSeconds;
-        const timeLimit = @(Model.TimeLimitSeconds ?? -1);
-
-        function renderTimer() {
-            const displayedSeconds = timeLimit >= 0
-                ? Math.max(0, timeLimit - elapsedSeconds)
-                : elapsedSeconds;
-
-            const minutes = Math.floor(displayedSeconds / 60);
-            const seconds = displayedSeconds % 60;
-
-            timerElement.textContent =
-                String(minutes).padStart(2, '0') + ':' +
-                String(seconds).padStart(2, '0');
-
-            // Предупреждаем игрока, когда время заканчивается.
-            if (timeLimit >= 0 && displayedSeconds <= 10) {
-                timerElement.classList.add('timer-warning');
-            }
-
-            elapsedSeconds++;
-        }
-
-        renderTimer();
-        window.setInterval(renderTimer, 1000);
-    })();
-</script>
