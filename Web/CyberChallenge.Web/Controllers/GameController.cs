@@ -47,7 +47,7 @@ namespace CyberChallenge.Web.Controllers
         /// </summary>
         public async Task<IActionResult> Index(int level = 1)
         {
-            var definition = this.gameService.GetLevel(level);
+            var definition = await this.gameService.GetLevelAsync(level);
 
             if (definition == null)
             {

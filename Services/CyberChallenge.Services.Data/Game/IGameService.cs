@@ -1,7 +1,7 @@
 namespace CyberChallenge.Services.Data.Game
 {
     using System.Collections.Generic;
-
+    using System.Threading.Tasks;
     using CyberChallenge.Services.Data.Game.Models;
 
     /// <summary>
@@ -12,7 +12,7 @@ namespace CyberChallenge.Services.Data.Game
         /// <summary>
         /// Возвращает описание указанного уровня.
         /// </summary>
-        GameLevelDefinition? GetLevel(int levelNumber);
+        Task<GameLevelDefinition?> GetLevelAsync(int levelNumber);
 
         /// <summary>
         /// Проверяет выбранные фишки по переданному описанию уровня.

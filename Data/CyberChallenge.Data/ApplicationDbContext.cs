@@ -43,6 +43,12 @@
         /// </summary>
         public DbSet<GameSession> GameSessions { get; set; } = null!;
 
+        /// <summary>
+        /// Описание игрового уровня.
+        /// </summary>
+        public DbSet<GameLevel> GameLevels { get; set; }
+
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

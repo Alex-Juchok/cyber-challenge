@@ -41,7 +41,7 @@
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(
+                options => options.UseNpgsql(
                     configuration.GetConnectionString("DefaultConnection"),
                     sqlOptions => sqlOptions.CommandTimeout(180))
                 .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));

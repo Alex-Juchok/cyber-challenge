@@ -3,14 +3,25 @@ namespace CyberChallenge.Services.Data.Game
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Threading.Tasks;
+    using CyberChallenge.Data.Common.Repositories;
     using CyberChallenge.Services.Data.Game.Models;
+    using Microsoft.EntityFrameworkCore;
+
 
     /// <summary>
     /// Реализует правила уровней и проверку решений.
     /// </summary>
     public sealed class GameService : IGameService
     {
+        private readonly IDeletableEntityRepository<GameLevel> repository;
+
+        public GameService(IDeletableEntityRepository<GameLevel> repository)
+        {
+            this.repository = repository;
+        }
+
+
         private static readonly Random Rand = new Random();
 
         /// <summary>
@@ -173,54 +184,29 @@ namespace CyberChallenge.Services.Data.Game
             };
         }
 
-
-        // Описания уровней хранятся централизованно.
-        private static readonly IReadOnlyDictionary<int, GameLevelDefinition> Levels =
-    new Dictionary<int, GameLevelDefinition>
-    {
-        // 1–2: Положительные числа (Сложение положительных фишек)
-        [1] = GenerateRandomLevel(1, "Первый шаг", "Сложите положительные числа. Каждую фишку можно использовать один раз."),
-        [2] = GenerateRandomLevel(2, "Точный расчёт", "Получите целевое число с помощью доступных положительных фишек."),
-
-        // 3–4: Отрицательные числа (Сложение положительных и отрицательных)
-        [3] = GenerateRandomLevel(3, "Отрицательный баланс", "В игре появились отрицательные числа. Они уменьшают общую сумму!"),
-        [4] = GenerateRandomLevel(4, "Баланс со знаком", "Учитывайте знак каждого числа при сложении, чтобы выйти на точную цель."),
-
-        // 5–6: Вычитание (Порядок выбора фишек влияет на результат)
-        [5] = GenerateRandomLevel(5, "Обратный отсчёт", "Режим вычитания! Каждая следующая выбранная фишка вычитается из предыдущей."),
-        [6] = GenerateRandomLevel(6, "Важен порядок", "Будьте внимательны: порядок выбора фишек при вычитании полностью меняет итог."),
-
-        // 7–8: Умножение (Произведение выбранных чисел)
-        [7] = GenerateRandomLevel(7, "Фактор роста", "Режим умножения! Выбранные числа перемножаются между собой."),
-        [8] = GenerateRandomLevel(8, "Масштабирование", "Быстрый рост чисел. Подберите правильные множители для достижения цели."),
-
-        // 9–10: Комбинированные операции (Например, сложение и умножение)
-        [9] = GenerateRandomLevel(9, "Смешанный режим", "Внимание на знак операции вверху экрана! Здесь могут быть как сумма, так и произведение."),
-        [10] = GenerateRandomLevel(10, "Двойной стандарт", "Операция выбирается случайно. Просчитайте стратегию под текущий режим."),
-
-        // 11–12: Обязательные фишки (Нужно использовать определённую фишку)
-        [11] = GenerateRandomLevel(11, "Особое условие", "Среди фишек есть обязательная (подсвечена на экране). Решение должно включать её!"),
-        [12] = GenerateRandomLevel(12, "Главный элемент", "Вы не сможете завершить уровень, если не задействуете обязательную фишку."),
-
-        // 13–14: Ограничение времени (Решение за заданное количество секунд)
-        [13] = GenerateRandomLevel(13, "Быстрый ум", "Время пошло! На этом уровне включён таймер. Поторопитесь с решением."),
-        [14] = GenerateRandomLevel(14, "Цейтнот", "Секунды тают! Успейте найти верную комбинацию до того, как время истечёт."),
-
-        // 15+: Смешанные испытания (Несколько правил одновременно)
-        [15] = GenerateRandomLevel(15, "Гранд-мастер", "Испытание для экспертов: случайная операция, ограничение по времени и обязательная фишка!"),
-        [16] = GenerateRandomLevel(16, "Абсолютный хаос", "Все правила перепутаны. Сможете ли вы справиться со случайным набором ограничений?")
-    };
-
-
-        /// <inheritdoc />
-        public GameLevelDefinition? GetLevel(int levelNumber)
+        ///<summary>
+        /// Асинхронно получает определение уровня по его номеру.
+        /// </summary>
+        /// <param name="levelNumber">Номер уровня.</param>
+        /// <returns>Определение уровня или null, если уровень не найден.</returns>
+        public async Task<GameLevelDefinition?> GetLevelAsync(int levelNumber)
         {
-            return Levels.TryGetValue(levelNumber, out var level)
-                ? level
-                : null;
+            // 1. Извлекаем заголовок и описание уровня из репозитория через .All()
+            var dbLevel = await this.repository.AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.LevelNumber == levelNumber);
+
+            if (dbLevel == null)
+            {
+                return null; // Уровень не настроен в базе данных
+            }
+
+            // 2. Генерируем случайную математическую раскладку, используя текст из БД
+            return GenerateRandomLevel(dbLevel.LevelNumber, dbLevel.Title, dbLevel.Description);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Проверка решения
+        /// </summary>
         public GameSolutionResult CheckSolution(
             GameLevelDefinition levelNumber,
             IReadOnlyCollection<string> selectedNumberIds)
@@ -315,6 +301,11 @@ namespace CyberChallenge.Services.Data.Game
                 rules,
                 GameOperation.Addition,
                 10, null);
+        }
+
+        public Task<GameLevelDefinition> GetLevel(int levelNumber)
+        {
+            throw new NotImplementedException();
         }
     }
 
